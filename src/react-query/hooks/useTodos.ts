@@ -1,9 +1,9 @@
-import useData from "./useData";
-interface Todo {
+import useAppQuery from "./useAppQuery";
+export interface Todo {
   id: number;
   title: string;
   userId: number;
   completed: boolean;
 }
-const useTodos = () => useData<Todo>("/todos", ["todos"]);
+const useTodos = () => useAppQuery<Todo>("/todos", ["todos"]);
 export default useTodos;

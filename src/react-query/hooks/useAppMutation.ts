@@ -1,14 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import ApiClient from "../services/apiClient";
 
 
 const useAppMutation = <T> (queryKey : string, endpoint : string , onAdd: () => void) => {
+  const apiClient = new ApiClient<T>(endpoint);
+
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (newData: T) =>
-      axios
-        .post<T>(`https://jsonplaceholder.typicode.com/${endpoint}`, newData)
-        .then((res) => res.data),
+    mutationFn: (newData: T) =>apiClient.post(newData),
 
     onMutate: (serverResponse) => {
       const oldState = queryClient.getQueryData<T[]>([queryKey]);

@@ -4,6 +4,7 @@ import {
   useInfiniteQuery,
 } from "@tanstack/react-query";
 import axios from "axios";
+import ApiClient from "../services/apiClient";
 interface Post {
   id: number;
   title: string;
@@ -17,6 +18,8 @@ interface PostQuery {
   pageSize: number;
 }
 const usePosts = (queryObject: PostQuery) => {
+  const apiClient = new ApiClient<Post>("/posts");
+
   return useInfiniteQuery<
     Post[],
     Error,
@@ -27,18 +30,14 @@ const usePosts = (queryObject: PostQuery) => {
     initialPageParam: 1,
     queryKey: ["posts"],
     queryFn: async ({ pageParam = 1 }) => {
-      return axios
-        .get("https://jsonplaceholder.typicode.com/posts", {
-          params: {
-            _start: (pageParam - 1) * 10,
-            _limit: queryObject.pageSize,
-          },
-        })
-        .then((res) => res.data);
+      return apiClient.getAll({
+        _start: (pageParam - 1) * 10,
+        _limit: queryObject.pageSize,
+      });
     },
     getNextPageParam: (lastPage, allPages) =>
       lastPage.length > 0 ? allPages.length + 1 : undefined,
   });
 };
-// "https://jsonplaceholder.typicode.com/posts";
+
 export default usePosts;

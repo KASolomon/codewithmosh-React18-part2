@@ -1,13 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import ApiClient from "../services/apiClient";
+
 
 const useAppQuery = <T>(endpoint: string, queryKey: any[], params?: {}) => {
+  const apiClient = new ApiClient<T>(endpoint);
   return useQuery<T[], Error>({
     queryKey,
-    queryFn: () =>
-      axios
-        .get<T[]>(`https://jsonplaceholder.typicode.com${endpoint}`, { params })
-        .then((res) => res.data),
+    queryFn: apiClient.getAll,
   });
 };
 export default useAppQuery;
